@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: jsure-dashboard-manager
+  cloud:
+    config:
+      fail-fast: true
+      password: Admin123!Pass!
+      uri: http://localhost:8000/jsure-config-server
+      username: admin
+jasypt:
+   encryptor:
+      password: Jsure2022!
+      bean : stringEncryptor

@@ -1,0 +1,17 @@
+jsure-dm:
+  apis:
+    operations:
+      list-all-dashboards:
+        path: /api/dashboards
+        summary: List All Dashboards
+        description: List All Dashboards
+        operation-id: List All Dashboards
+      find-current-dashboards-by-user:
+        path: /api/dashboards/current
+        summary: Find Current Dashboards By User
+        description: Find Current Dashboards By User
+        operation-id: Find Current Dashboards By User
+    tags:
+      dashboard-service:
+        name: Dashboard Services
+        description: Dashboard Services

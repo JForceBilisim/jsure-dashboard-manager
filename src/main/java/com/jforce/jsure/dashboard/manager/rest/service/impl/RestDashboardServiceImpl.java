@@ -9,6 +9,7 @@ import com.jforce.jsure.dashboard.manager.service.IDashboardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,22 +17,22 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "${jsure-rs.tags.dashboard-service.name}", description = "${jsure-rs.tags.dashboard.description}")
+@Tag(name = "${jsure-dm.tags.dashboard-service.name}", description = "${jsure-dm.tags.dashboard.description}")
 public class RestDashboardServiceImpl extends BaseRestController implements RestDashboardService {
 
     private final IDashboardService dashboardService;
 
     @Override
-    @Operation(description = "${jsure-rs.apis.operations.list-all-dashboards.description}", summary = "${jsure-rs.apis.operations.list-all-dashboards.summary}", operationId = "list-all-dashboards")
-    @GetMapping(path = "${jsure-rs.apis.operations.list-all-dashboards.path}", produces = { "application/json" })
+    @Operation(description = "${jsure-dm.apis.operations.list-all-dashboards.description}", summary = "${jsure-dm.apis.operations.list-all-dashboards.summary}", operationId = "list-all-dashboards")
+    @GetMapping(path = "${jsure-dm.apis.operations.list-all-dashboards.path}", produces = { "application/json" })
     public RestRootEntity<List<DtoDashboard>> findAllDashboards() {
         List<Dashboard> dashboards = dashboardService.findAllDashboards();
         return ok(dashboardService.toDTOList(dashboards));
     }
 
     @Override
-    @Operation(description = "${jsure-rs.apis.operations.find-current-dashboards-by-user.description}", summary = "${jsure-rs.apis.operations.find-current-dashboards-by-user.summary}", operationId = "find-current-dashboards-by-user")
-    @GetMapping(path = "${jsure-rs.apis.operations.find-current-dashboards-by-user.path}", produces = { "application/json" })
+    @Operation(description = "${jsure-dm.apis.operations.find-current-dashboards-by-user.description}", summary = "${jsure-dm.apis.operations.find-current-dashboards-by-user.summary}", operationId = "find-current-dashboards-by-user")
+    @GetMapping(path = "${jsure-dm.apis.operations.find-current-dashboards-by-user.path}", produces = { "application/json" })
     public RestRootEntity<List<DtoDashboard>> findCurrentDashboardsByUser() {
         List<Dashboard> currentDashboards = dashboardService.findCurrentDashboardsByUser();
         return ok(dashboardService.toDTOList(currentDashboards));

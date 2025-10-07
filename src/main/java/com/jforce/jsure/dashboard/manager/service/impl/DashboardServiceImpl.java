@@ -7,6 +7,7 @@ import com.jforce.jsure.dashboard.manager.db.model.Dashboard;
 import com.jforce.jsure.dashboard.manager.repository.DashboardRepository;
 import com.jforce.jsure.dashboard.manager.rest.model.DtoDashboard;
 import com.jforce.jsure.dashboard.manager.service.IDashboardService;
+import com.jforce.jsure.utils.JStringUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,7 @@ public class DashboardServiceImpl extends BaseDbServiceImpl<DashboardRepository,
     @Override
     public <D extends DtoEntityModel> D toDTO(Dashboard dashboard) {
         DtoDashboard dtoDashboard = super.toDTO(dashboard);
+
         return (D) dtoDashboard;
     }
 

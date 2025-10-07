@@ -1,0 +1,3 @@
+jsure.build.version=@project.version@
+jsure.build.applicationName=@project.name@
+jsure.build.buildTime=@maven.build.timestamp@

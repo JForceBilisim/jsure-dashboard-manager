@@ -3,7 +3,12 @@ package com.jforce.jsure.dashboard.manager.db.model;
 import com.jforce.jsure.base.db.model.JsureDbEntity;
 import com.jforce.jsure.dashboard.manager.enums.model.PanelSize;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+@Entity
+@Getter
+@Setter
 public class DashboardWidget extends JsureDbEntity {
 
     private static final long serialVersionUID = 1L;

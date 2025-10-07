@@ -1,17 +1,33 @@
 package com.jforce.jsure.dashboard.manager.starter;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import com.jforce.jsure.base.configs.YamlPropertySourceFactory;
+import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.envers.repository.support.EnversRevisionRepositoryFactoryBean;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+@Slf4j
+@SpringBootApplication()
+@ComponentScan(basePackages = { "com.jforce.jsure.*" } )
+@EntityScan(basePackages = { "com.jforce.jsure.*" })
+@PropertySource(value = "classpath:api-definitions.yml", factory = YamlPropertySourceFactory.class)
+@EnableEncryptableProperties()
+@EnableJpaRepositories(basePackages = { "com.jforce.jsure.*" })
+@EnableScheduling
+@EnableCaching
 public class JsureDashboardManagerStarter {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
-
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
-        }
+        log.info("{} application is starting", JsureDashboardManagerStarter.class.getCanonicalName());
+        SpringApplication.run(JsureDashboardManagerStarter.class, args);
+        log.info("{} application is started", JsureDashboardManagerStarter.class.getCanonicalName());
     }
 }

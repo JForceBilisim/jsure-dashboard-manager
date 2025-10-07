@@ -5,10 +5,16 @@ import com.jforce.jsure.base.enums.model.LanguageType;
 import com.jforce.jsure.dashboard.manager.converter.LanguageSupportedMapConverter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
 import jakarta.persistence.Lob;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Map;
 
+@Entity
+@Getter
+@Setter
 public class DashboardTemplate extends JsureDbEntity {
 
     private static final long serialVersionUID = 1L;

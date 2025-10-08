@@ -114,6 +114,14 @@ public class DashboardServiceImpl extends BaseDbServiceImpl<DashboardRepository,
         return toDTO(dashboard);
     }
 
+    @Override
+    public DtoDashboard makeMainDashboard(String id) {
+        Dashboard dashboard = findAndCheckById(id);
+        dashboard.setIsMainDashboard(true);
+        update(dashboard);
+        return toDTO(dashboard);
+    }
+
     private void updateDashboardWidget(Dashboard dashboard, DtoDashboardWidgetIU dtoDashboardWidgetIU) {
         DashboardWidget dashboardWidget = dashboardWidgetService.findDashboardWidgetByDashboardAndWidget(dashboard.getId(), dtoDashboardWidgetIU.getWidgetId());
         dashboardWidget.setDashboard(dashboard);

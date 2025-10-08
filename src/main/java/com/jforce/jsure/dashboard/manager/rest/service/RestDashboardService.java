@@ -19,4 +19,6 @@ public interface RestDashboardService {
     RestRootEntity<DtoDashboardInfo> updateDashboard(String id, DtoDashboardIU dtoDashboardIU);
 
     RestRootEntity<DtoDashboard> deleteDashboard(String id);
+
+    RestRootEntity<DtoDashboard> makeDashboardMain(String id);
 }

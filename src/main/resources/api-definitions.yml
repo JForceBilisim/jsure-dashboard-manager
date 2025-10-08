@@ -26,6 +26,11 @@ jsure-dm:
         summary: Delete Dashboard
         description: Delete Dashboard
         operation-id: Delete Dashboard
+      make-main-dashboard:
+        path: /api/dashboards/{id}/make-main
+        summary: Make Main Dashboard
+        description: Make Main Dashboard
+        operation-id: Make Main Dashboard
     tags:
       dashboard-service:
         name: Dashboard Services

@@ -19,4 +19,6 @@ public interface IDashboardService extends BaseDbService<Dashboard> {
     DtoDashboardInfo updateDashboard(String id, DtoDashboardIU dtoDashboardIU);
 
     DtoDashboard deleteDashboard(String id);
+
+    DtoDashboard makeMainDashboard(String id);
 }

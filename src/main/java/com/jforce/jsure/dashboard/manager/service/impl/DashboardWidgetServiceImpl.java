@@ -12,6 +12,8 @@ import com.jforce.jsure.dashboard.manager.db.model.Widget;
 import com.jforce.jsure.dashboard.manager.repository.DashboardWidgetRepository;
 import com.jforce.jsure.dashboard.manager.rest.model.DtoDashboardInfo;
 import com.jforce.jsure.dashboard.manager.rest.model.DtoDashboardWidget;
+import com.jforce.jsure.dashboard.manager.rest.model.DtoWidget;
+import com.jforce.jsure.dashboard.manager.rest.model.DtoWidgetInfo;
 import com.jforce.jsure.dashboard.manager.service.IDashboardService;
 import com.jforce.jsure.dashboard.manager.service.IDashboardWidgetService;
 import com.jforce.jsure.dashboard.manager.service.IWidgetService;
@@ -61,23 +63,37 @@ public class DashboardWidgetServiceImpl extends BaseDbServiceImpl<DashboardWidge
         List<String> dashboardIds = new ArrayList<>();
         dashboards.forEach(dashboard -> dashboardIds.add(dashboard.getId()));
         List<DashboardWidget> dashboardWidgets = dao.findWidgetsByDashboard(dashboardIds);
-        Map<Dashboard, List<Widget>> dashboardWidgetsMap =
+        Map<Dashboard, List<DashboardWidget>> grouped =
                 dashboardWidgets.stream()
                         .collect(Collectors.groupingBy(
                                 DashboardWidget::getDashboard,
                                 LinkedHashMap::new,
-                                Collectors.mapping(DashboardWidget::getWidget,
-                                        Collectors.toList())
+                                Collectors.toList()
                         ));
+
         List<DtoDashboardInfo> dtoDashboardInfos = new ArrayList<>();
-        for (Map.Entry<Dashboard, List<Widget>> entry : dashboardWidgetsMap.entrySet()) {
+        for (Map.Entry<Dashboard, List<DashboardWidget>> entry : grouped.entrySet()) {
             Dashboard dashboard = entry.getKey();
-            List<Widget> widgets = entry.getValue();
+            List<DashboardWidget> dwList = entry.getValue();
+
+            List<DtoWidgetInfo> widgetDtos = dwList.stream().map(dw -> {
+                DtoWidgetInfo dtoWidgetInfo = new DtoWidgetInfo();
+                DtoWidget dtoWidget = widgetService.toDTO(dw.getWidget());
+                dtoWidgetInfo.setWidget(dtoWidget);
+                dtoWidgetInfo.setCoordX(dw.getCoordX());
+                dtoWidgetInfo.setCoordY(dw.getCoordY());
+                dtoWidgetInfo.setPanelSize(dw.getPanelSize());
+                return dtoWidgetInfo;
+            }).collect(Collectors.toList());
+
             DtoDashboardInfo dtoDashboardInfo = new DtoDashboardInfo();
             dtoDashboardInfo.setDashboard(dashboardService.toDTO(dashboard));
-            dtoDashboardInfo.setWidgets(widgetService.toDTOList(widgets));
+
+            dtoDashboardInfo.setWidgets(widgetDtos);
+
             dtoDashboardInfos.add(dtoDashboardInfo);
         }
+
         return dtoDashboardInfos;
     }
 }

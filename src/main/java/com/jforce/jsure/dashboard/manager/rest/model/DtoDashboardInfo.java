@@ -12,5 +12,5 @@ public class DtoDashboardInfo extends DtoEntityModel {
 
     private DtoDashboard dashboard;
 
-    private List<DtoWidget> widgets;
+    private List<DtoWidgetInfo> widgets;
 }

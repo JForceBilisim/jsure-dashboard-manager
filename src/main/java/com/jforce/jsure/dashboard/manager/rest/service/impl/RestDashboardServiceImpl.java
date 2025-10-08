@@ -5,6 +5,7 @@ import com.jforce.jsure.base.restservice.model.RestRootEntity;
 import com.jforce.jsure.dashboard.manager.db.model.Dashboard;
 import com.jforce.jsure.dashboard.manager.db.model.DashboardWidget;
 import com.jforce.jsure.dashboard.manager.rest.model.DtoDashboard;
+import com.jforce.jsure.dashboard.manager.rest.model.DtoDashboardIU;
 import com.jforce.jsure.dashboard.manager.rest.model.DtoDashboardInfo;
 import com.jforce.jsure.dashboard.manager.rest.model.DtoDashboardWidget;
 import com.jforce.jsure.dashboard.manager.rest.service.RestDashboardService;
@@ -14,7 +15,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -42,6 +46,13 @@ public class RestDashboardServiceImpl extends BaseRestController implements Rest
     public RestRootEntity<List<DtoDashboardInfo>> findCurrentDashboardsByUser() {
         List<Dashboard> currentDashboards = dashboardService.findCurrentDashboardsByUser();
         return ok(dashboardWidgetService.findWidgetsOfDashboards(currentDashboards));
+    }
+
+    @Override
+    @Operation(description = "${jsure-dm.apis.operations.create-dashboard.description}", summary = "${jsure-dm.apis.operations.create-dashboard.summary}", operationId = "create-dashboard")
+    @PostMapping(path = "${jsure-dm.apis.operations.create-dashboard.path}", produces = { "application/json" })
+    public RestRootEntity<DtoDashboardInfo> createNewDashboard(@RequestBody @Validated DtoDashboardIU dtoDashboardIU) {
+        return ok(dashboardService.createNewDashboard(dtoDashboardIU));
     }
 
 }

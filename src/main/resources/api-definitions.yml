@@ -11,6 +11,11 @@ jsure-dm:
         summary: Find Current Dashboards By User
         description: Find Current Dashboards By User
         operation-id: Find Current Dashboards By User
+      create-dashboard:
+        path: /api/dashboards
+        summary: Create New Dashboard
+        description: Create New Dashboard
+        operation-id: Create New Dashboard
     tags:
       dashboard-service:
         name: Dashboard Services

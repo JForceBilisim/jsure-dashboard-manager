@@ -1,20 +1,32 @@
 package com.jforce.jsure.dashboard.manager.service.impl;
 
 import com.jforce.jsure.base.db.service.BaseDbServiceImpl;
+import com.jforce.jsure.base.enums.model.JMessageType;
+import com.jforce.jsure.base.exceptions.JSureException;
+import com.jforce.jsure.base.exceptions.model.JMessageFactory;
+import com.jforce.jsure.base.exceptions.model.JSureMessage;
 import com.jforce.jsure.base.restservice.model.DtoEntityModel;
 import com.jforce.jsure.base.security.model.JSureSessionInstance;
 import com.jforce.jsure.dashboard.manager.db.model.Dashboard;
+import com.jforce.jsure.dashboard.manager.db.model.DashboardTemplate;
+import com.jforce.jsure.dashboard.manager.db.model.DashboardWidget;
+import com.jforce.jsure.dashboard.manager.db.model.Widget;
 import com.jforce.jsure.dashboard.manager.repository.DashboardRepository;
-import com.jforce.jsure.dashboard.manager.rest.model.DtoDashboard;
+import com.jforce.jsure.dashboard.manager.rest.model.*;
 import com.jforce.jsure.dashboard.manager.service.IDashboardService;
 import com.jforce.jsure.dashboard.manager.service.IDashboardTemplateService;
+import com.jforce.jsure.dashboard.manager.service.IDashboardWidgetService;
+import com.jforce.jsure.dashboard.manager.service.IWidgetService;
+import com.jforce.jsure.utils.JObjectUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +34,14 @@ public class DashboardServiceImpl extends BaseDbServiceImpl<DashboardRepository,
 
     @Autowired
     private IDashboardTemplateService dashboardTemplateService;
+
+    @Autowired
+    @Lazy
+    private IWidgetService widgetService;
+
+    @Autowired
+    @Lazy
+    private IDashboardWidgetService dashboardWidgetService;
 
 
     @Override
@@ -61,5 +81,59 @@ public class DashboardServiceImpl extends BaseDbServiceImpl<DashboardRepository,
     public List<Dashboard> findCurrentDashboardsByUser() {
         JSureSessionInstance sessionInstance = sessionInstanceService.getSessionInstance();
         return dao.findCurrentDashboardsByUsername(sessionInstance.getUserInformation().getUserName());
+    }
+
+    @Override
+    public DtoDashboardInfo createNewDashboard(DtoDashboardIU dtoDashboardIU) {
+        if(JObjectUtils.isEmpty(dtoDashboardIU.getWidgets())) {
+            throw new JSureException(new JSureMessage(JMessageType.NOT_EXISTS_IN_THE_RECORDS_1006, JMessageFactory.ofBundle(JMessageType.NOT_EXISTS_IN_THE_RECORDS_1006.getBundleCode())));
+        }
+        Dashboard dashboard = saveNewDashboard(dtoDashboardIU);
+        for(DtoDashboardWidgetIU dtoDashboardWidgetIU: dtoDashboardIU.getWidgets()) {
+            saveNewDashboardWidget(dashboard, dtoDashboardWidgetIU);
+        }
+        return createDashboardInfo(dashboard, dtoDashboardIU);
+    }
+
+    private Dashboard saveNewDashboard(DtoDashboardIU dtoDashboardIU) {
+        Dashboard dashboard = new Dashboard();
+        dashboard.setName(dtoDashboardIU.getName());
+        dashboard.setDesignType(dtoDashboardIU.getDesignType());
+        dashboard.setUsername(sessionInstanceService.getSessionInstance().getUserInformation().getUserName());
+        if(dtoDashboardIU.getDashboardTemplateId() != null) {
+            DashboardTemplate dashboardTemplate = dashboardTemplateService.findAndCheckById(dtoDashboardIU.getDashboardTemplateId());
+            dashboard.setDashboardTemplate(dashboardTemplate);
+        }
+        dashboard.setDashboardType(dtoDashboardIU.getDashboardType());
+        save(dashboard);
+        return dashboard;
+    }
+
+    private void saveNewDashboardWidget(Dashboard dashboard, DtoDashboardWidgetIU dtoDashboardWidgetIU) {
+        DashboardWidget dashboardWidget = new DashboardWidget();
+        dashboardWidget.setDashboard(dashboard);
+        Widget widget = widgetService.findAndCheckById(dtoDashboardWidgetIU.getWidgetId());
+        dashboardWidget.setWidget(widget);
+        dashboardWidget.setCoordX(dtoDashboardWidgetIU.getCoordX());
+        dashboardWidget.setCoordY(dtoDashboardWidgetIU.getCoordY());
+        dashboardWidget.setPanelSize(dtoDashboardWidgetIU.getPanelSize());
+        dashboardWidgetService.save(dashboardWidget);
+    }
+
+    private DtoDashboardInfo createDashboardInfo(Dashboard dashboard, DtoDashboardIU dtoDashboardIU) {
+        DtoDashboardInfo dtoDashboardInfo = new DtoDashboardInfo();
+        dtoDashboardInfo.setDashboard(toDTO(dashboard));
+        List<DtoWidgetInfo> widgetDtos = dtoDashboardIU.getWidgets().stream().map(dw -> {
+            DtoWidgetInfo dtoWidgetInfo = new DtoWidgetInfo();
+            Widget widget = widgetService.findAndCheckById(dw.getWidgetId());
+            DtoWidget dtoWidget = widgetService.toDTO(widget);
+            dtoWidgetInfo.setWidget(dtoWidget);
+            dtoWidgetInfo.setCoordX(dw.getCoordX());
+            dtoWidgetInfo.setCoordY(dw.getCoordY());
+            dtoWidgetInfo.setPanelSize(dw.getPanelSize());
+            return dtoWidgetInfo;
+        }).collect(Collectors.toList());
+        dtoDashboardInfo.setWidgets(widgetDtos);
+        return dtoDashboardInfo;
     }
 }

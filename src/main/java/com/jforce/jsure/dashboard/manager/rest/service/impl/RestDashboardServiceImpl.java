@@ -55,8 +55,15 @@ public class RestDashboardServiceImpl extends BaseRestController implements Rest
     @Override
     @Operation(description = "${jsure-dm.apis.operations.update-dashboard.description}", summary = "${jsure-dm.apis.operations.update-dashboard.summary}", operationId = "update-dashboard")
     @PutMapping(path = "${jsure-dm.apis.operations.update-dashboard.path}", produces = { "application/json" })
-    public RestRootEntity<DtoDashboardInfo> updateNewDashboard(@PathVariable(name ="id", required = true)String id, @RequestBody @Validated DtoDashboardIU dtoDashboardIU) {
-        return ok(dashboardService.updateNewDashboard(id, dtoDashboardIU));
+    public RestRootEntity<DtoDashboardInfo> updateDashboard(@PathVariable(name ="id", required = true)String id, @RequestBody @Validated DtoDashboardIU dtoDashboardIU) {
+        return ok(dashboardService.updateDashboard(id, dtoDashboardIU));
+    }
+
+    @Override
+    @Operation(description = "${jsure-dm.apis.operations.delete-dashboard.description}", summary = "${jsure-dm.apis.operations.delete-dashboard.summary}", operationId = "delete-dashboard")
+    @DeleteMapping(path = "${jsure-dm.apis.operations.delete-dashboard.path}", produces = { "application/json" })
+    public RestRootEntity<DtoDashboard> deleteDashboard(@PathVariable(name ="id", required = true)String id) {
+        return ok(dashboardService.deleteDashboard(id));
     }
 
 }

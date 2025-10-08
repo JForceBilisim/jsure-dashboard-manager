@@ -11,5 +11,7 @@ public interface IDashboardWidgetService extends BaseDbService<DashboardWidget> 
 
     List<DtoDashboardInfo> findWidgetsOfDashboards(List<Dashboard> dashboards);
 
-    public DashboardWidget findDashboardWidgetByDashboardAndWidget(String dashboardId, String widgetId);
+    DashboardWidget findDashboardWidgetByDashboardAndWidget(String dashboardId, String widgetId);
+
+    List<DashboardWidget> findDashboardWidgetByDashboardId(String dashboardId);
 }

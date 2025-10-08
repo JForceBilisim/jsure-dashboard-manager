@@ -96,13 +96,22 @@ public class DashboardServiceImpl extends BaseDbServiceImpl<DashboardRepository,
     }
 
     @Override
-    public DtoDashboardInfo updateNewDashboard(String id, DtoDashboardIU dtoDashboardIU) {
+    public DtoDashboardInfo updateDashboard(String id, DtoDashboardIU dtoDashboardIU) {
         Dashboard dashboard = findAndCheckById(id);
         updateDashboard(dashboard, dtoDashboardIU);
         for(DtoDashboardWidgetIU dtoDashboardWidgetIU: dtoDashboardIU.getWidgets()) {
             updateDashboardWidget(dashboard, dtoDashboardWidgetIU);
         }
         return createDashboardInfo(dashboard, dtoDashboardIU);
+    }
+
+    @Override
+    public DtoDashboard deleteDashboard(String id) {
+        Dashboard dashboard = findAndCheckById(id);
+        List<DashboardWidget> dashboardWidgets = dashboardWidgetService.findDashboardWidgetByDashboardId(id);
+        dashboardWidgetService.deleteAll(dashboardWidgets);
+        delete(dashboard);
+        return toDTO(dashboard);
     }
 
     private void updateDashboardWidget(Dashboard dashboard, DtoDashboardWidgetIU dtoDashboardWidgetIU) {

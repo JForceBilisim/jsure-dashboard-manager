@@ -1,7 +1,6 @@
 package com.jforce.jsure.dashboard.manager.repository;
 
 import com.jforce.jsure.base.db.repository.BaseDaoRepository;
-import com.jforce.jsure.dashboard.manager.db.model.Dashboard;
 import com.jforce.jsure.dashboard.manager.db.model.DashboardWidget;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
@@ -16,4 +15,7 @@ public interface DashboardWidgetRepository extends BaseDaoRepository<DashboardWi
 
     @Query("select dw from DashboardWidget dw where dw.dashboard.id =:dashboardId and dw.widget.id =:widgetId")
     DashboardWidget findDashboardWidgetByDashboardAndWidget(String dashboardId, String widgetId);
+
+    @Query("select dw from DashboardWidget dw where dw.dashboard.id =:dashboardId")
+    List<DashboardWidget> findWidgetsByDashboardId(String dashboardId);
 }

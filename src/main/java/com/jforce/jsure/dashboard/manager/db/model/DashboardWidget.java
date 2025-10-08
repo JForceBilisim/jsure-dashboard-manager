@@ -9,6 +9,8 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@NamedEntityGraph(name = "dashboard-widget-detail", attributeNodes = {
+        @NamedAttributeNode(value = "widget") })
 public class DashboardWidget extends JsureDbEntity {
 
     private static final long serialVersionUID = 1L;

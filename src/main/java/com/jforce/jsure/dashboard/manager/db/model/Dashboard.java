@@ -11,6 +11,8 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@NamedEntityGraph(name = "dashboard-template-detail", attributeNodes = {
+        @NamedAttributeNode(value = "dashboardTemplate") })
 public class Dashboard extends JsureSimpleCompanyEntity {
 
     private static final long serialVersionUID = 1L;

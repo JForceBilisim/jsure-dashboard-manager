@@ -3,9 +3,13 @@ package com.jforce.jsure.dashboard.manager.rest.service.impl;
 import com.jforce.jsure.base.restservice.base.BaseRestController;
 import com.jforce.jsure.base.restservice.model.RestRootEntity;
 import com.jforce.jsure.dashboard.manager.db.model.Dashboard;
+import com.jforce.jsure.dashboard.manager.db.model.DashboardWidget;
 import com.jforce.jsure.dashboard.manager.rest.model.DtoDashboard;
+import com.jforce.jsure.dashboard.manager.rest.model.DtoDashboardInfo;
+import com.jforce.jsure.dashboard.manager.rest.model.DtoDashboardWidget;
 import com.jforce.jsure.dashboard.manager.rest.service.RestDashboardService;
 import com.jforce.jsure.dashboard.manager.service.IDashboardService;
+import com.jforce.jsure.dashboard.manager.service.IDashboardWidgetService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +26,8 @@ public class RestDashboardServiceImpl extends BaseRestController implements Rest
 
     private final IDashboardService dashboardService;
 
+    private final IDashboardWidgetService dashboardWidgetService;
+
     @Override
     @Operation(description = "${jsure-dm.apis.operations.list-all-dashboards.description}", summary = "${jsure-dm.apis.operations.list-all-dashboards.summary}", operationId = "list-all-dashboards")
     @GetMapping(path = "${jsure-dm.apis.operations.list-all-dashboards.path}", produces = { "application/json" })
@@ -33,9 +39,9 @@ public class RestDashboardServiceImpl extends BaseRestController implements Rest
     @Override
     @Operation(description = "${jsure-dm.apis.operations.find-current-dashboards-by-user.description}", summary = "${jsure-dm.apis.operations.find-current-dashboards-by-user.summary}", operationId = "find-current-dashboards-by-user")
     @GetMapping(path = "${jsure-dm.apis.operations.find-current-dashboards-by-user.path}", produces = { "application/json" })
-    public RestRootEntity<List<DtoDashboard>> findCurrentDashboardsByUser() {
+    public RestRootEntity<List<DtoDashboardInfo>> findCurrentDashboardsByUser() {
         List<Dashboard> currentDashboards = dashboardService.findCurrentDashboardsByUser();
-        return ok(dashboardService.toDTOList(currentDashboards));
+        return ok(dashboardWidgetService.findWidgetsOfDashboards(currentDashboards));
     }
 
 }

@@ -24,6 +24,5 @@ public class DtoDashboard extends DtoEntityModel {
 
     private DtoDashboardTemplate dashboardTemplate;
 
-    @EnumConverter(enumClass = DashboardType.class, fieldName = "dashboardType")
-    private EnumValue dashboardType;
+    private DashboardType dashboardType;
 }

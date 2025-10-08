@@ -16,6 +16,11 @@ jsure-dm:
         summary: Create New Dashboard
         description: Create New Dashboard
         operation-id: Create New Dashboard
+      update-dashboard:
+        path: /api/dashboards/{id}/update
+        summary: Update Dashboard
+        description: Update Dashboard
+        operation-id: Update Dashboard
     tags:
       dashboard-service:
         name: Dashboard Services

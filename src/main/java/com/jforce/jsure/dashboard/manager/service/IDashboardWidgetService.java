@@ -10,4 +10,6 @@ import java.util.List;
 public interface IDashboardWidgetService extends BaseDbService<DashboardWidget> {
 
     List<DtoDashboardInfo> findWidgetsOfDashboards(List<Dashboard> dashboards);
+
+    public DashboardWidget findDashboardWidgetByDashboardAndWidget(String dashboardId, String widgetId);
 }

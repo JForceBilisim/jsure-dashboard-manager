@@ -14,4 +14,6 @@ public interface IDashboardService extends BaseDbService<Dashboard> {
     List<Dashboard> findCurrentDashboardsByUser();
 
     DtoDashboardInfo createNewDashboard(DtoDashboardIU dtoDashboardIU);
+
+    DtoDashboardInfo updateNewDashboard(String id, DtoDashboardIU dtoDashboardIU);
 }

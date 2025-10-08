@@ -96,4 +96,9 @@ public class DashboardWidgetServiceImpl extends BaseDbServiceImpl<DashboardWidge
 
         return dtoDashboardInfos;
     }
+
+    @Override
+    public DashboardWidget findDashboardWidgetByDashboardAndWidget(String dashboardId, String widgetId) {
+        return dao.findDashboardWidgetByDashboardAndWidget(dashboardId, widgetId);
+    }
 }

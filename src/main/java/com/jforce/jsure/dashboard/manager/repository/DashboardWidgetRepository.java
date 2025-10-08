@@ -13,4 +13,7 @@ public interface DashboardWidgetRepository extends BaseDaoRepository<DashboardWi
     @EntityGraph(value = "dashboard-widget-detail", type = EntityGraph.EntityGraphType.FETCH)
     @Query("select dw from DashboardWidget dw where dw.dashboard.id in :dashboardIds")
     List<DashboardWidget> findWidgetsByDashboard(List<String> dashboardIds);
+
+    @Query("select dw from DashboardWidget dw where dw.dashboard.id =:dashboardId and dw.widget.id =:widgetId")
+    DashboardWidget findDashboardWidgetByDashboardAndWidget(String dashboardId, String widgetId);
 }

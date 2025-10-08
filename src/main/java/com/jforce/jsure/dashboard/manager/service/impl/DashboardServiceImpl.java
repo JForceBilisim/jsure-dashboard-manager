@@ -95,6 +95,39 @@ public class DashboardServiceImpl extends BaseDbServiceImpl<DashboardRepository,
         return createDashboardInfo(dashboard, dtoDashboardIU);
     }
 
+    @Override
+    public DtoDashboardInfo updateNewDashboard(String id, DtoDashboardIU dtoDashboardIU) {
+        Dashboard dashboard = findAndCheckById(id);
+        updateDashboard(dashboard, dtoDashboardIU);
+        for(DtoDashboardWidgetIU dtoDashboardWidgetIU: dtoDashboardIU.getWidgets()) {
+            updateDashboardWidget(dashboard, dtoDashboardWidgetIU);
+        }
+        return createDashboardInfo(dashboard, dtoDashboardIU);
+    }
+
+    private void updateDashboardWidget(Dashboard dashboard, DtoDashboardWidgetIU dtoDashboardWidgetIU) {
+        DashboardWidget dashboardWidget = dashboardWidgetService.findDashboardWidgetByDashboardAndWidget(dashboard.getId(), dtoDashboardWidgetIU.getWidgetId());
+        dashboardWidget.setDashboard(dashboard);
+        Widget widget = widgetService.findAndCheckById(dtoDashboardWidgetIU.getWidgetId());
+        dashboardWidget.setWidget(widget);
+        dashboardWidget.setCoordX(dtoDashboardWidgetIU.getCoordX());
+        dashboardWidget.setCoordY(dtoDashboardWidgetIU.getCoordY());
+        dashboardWidget.setPanelSize(dtoDashboardWidgetIU.getPanelSize());
+        dashboardWidgetService.update(dashboardWidget);
+    }
+
+    private void updateDashboard(Dashboard dashboard, DtoDashboardIU dtoDashboardIU) {
+        dashboard.setName(dtoDashboardIU.getName());
+        dashboard.setDesignType(dtoDashboardIU.getDesignType());
+        dashboard.setUsername(sessionInstanceService.getSessionInstance().getUserInformation().getUserName());
+        if(dtoDashboardIU.getDashboardTemplateId() != null) {
+            DashboardTemplate dashboardTemplate = dashboardTemplateService.findAndCheckById(dtoDashboardIU.getDashboardTemplateId());
+            dashboard.setDashboardTemplate(dashboardTemplate);
+        }
+        dashboard.setDashboardType(dtoDashboardIU.getDashboardType());
+        update(dashboard);
+    }
+
     private Dashboard saveNewDashboard(DtoDashboardIU dtoDashboardIU) {
         Dashboard dashboard = new Dashboard();
         dashboard.setName(dtoDashboardIU.getName());

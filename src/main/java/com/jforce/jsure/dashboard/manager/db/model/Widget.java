@@ -5,10 +5,8 @@ import com.jforce.jsure.base.enums.model.LanguageType;
 import com.jforce.jsure.dashboard.manager.converter.LanguageSupportedMapConverter;
 import com.jforce.jsure.dashboard.manager.converter.PanelSizeConverter;
 import com.jforce.jsure.dashboard.manager.enums.model.PanelSize;
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Lob;
+import com.jforce.jsure.dashboard.manager.enums.model.WidgetType;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -48,4 +46,8 @@ public class Widget extends JsureDbEntity {
     @Convert(converter = PanelSizeConverter.class)
     @Column(name = "panel_sizes")
     private List<PanelSize> panelSizes;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "widget_type", nullable = false)
+    private WidgetType widgetType;
 }

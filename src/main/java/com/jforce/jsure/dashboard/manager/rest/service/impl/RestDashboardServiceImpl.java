@@ -46,6 +46,13 @@ public class RestDashboardServiceImpl extends BaseRestController implements Rest
     }
 
     @Override
+    @Operation(description = "${jsure-dm.apis.operations.find-dashboard-by-id.description}", summary = "${jsure-dm.apis.operations.find-dashboard-by-id.summary}", operationId = "find-dashboard-by-id")
+    @GetMapping(path = "${jsure-dm.apis.operations.find-dashboard-by-id.path}", produces = { "application/json" })
+    public RestRootEntity<DtoDashboardInfo> findDashboardById(@PathVariable(name ="id", required = true)String id) {
+        return ok(dashboardService.findDashboardById(id));
+    }
+
+    @Override
     @Operation(description = "${jsure-dm.apis.operations.create-dashboard.description}", summary = "${jsure-dm.apis.operations.create-dashboard.summary}", operationId = "create-dashboard")
     @PostMapping(path = "${jsure-dm.apis.operations.create-dashboard.path}", produces = { "application/json" })
     public RestRootEntity<DtoDashboardInfo> createNewDashboard(@RequestBody @Validated DtoDashboardIU dtoDashboardIU) {
@@ -71,6 +78,13 @@ public class RestDashboardServiceImpl extends BaseRestController implements Rest
     @PutMapping(path = "${jsure-dm.apis.operations.make-main-dashboard.path}", produces = { "application/json" })
     public RestRootEntity<DtoDashboard> makeDashboardMain(@PathVariable(name ="id", required = true)String id) {
         return ok(dashboardService.makeMainDashboard(id));
+    }
+
+    @Override
+    @Operation(description = "${jsure-dm.apis.operations.rollback-main-dashboard.description}", summary = "${jsure-dm.apis.operations.rollback-main-dashboard.summary}", operationId = "rollback-main-dashboard")
+    @PutMapping(path = "${jsure-dm.apis.operations.rollback-main-dashboard.path}", produces = { "application/json" })
+    public RestRootEntity<DtoDashboard> rollbackDashboardMain(@PathVariable(name ="id", required = true)String id) {
+        return ok(dashboardService.rollbackMainDashboard(id));
     }
 
 }

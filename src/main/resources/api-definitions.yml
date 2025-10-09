@@ -11,6 +11,11 @@ jsure-dm:
         summary: Find Current Dashboards By User
         description: Find Current Dashboards By User
         operation-id: Find Current Dashboards By User
+      find-dashboard-by-id:
+        path: /api/dashboards/{id}
+        summary: Find Dashboard By Id
+        description: Find Dashboard By Id
+        operation-id: Find Dashboard By Id
       create-dashboard:
         path: /api/dashboards
         summary: Create New Dashboard
@@ -31,6 +36,11 @@ jsure-dm:
         summary: Make Main Dashboard
         description: Make Main Dashboard
         operation-id: Make Main Dashboard
+      rollback-main-dashboard:
+        path: /api/dashboards/{id}/rollback-main
+        summary: Rollback Main Dashboard
+        description: Rollback Main Dashboard
+        operation-id: Rollback Main Dashboard
     tags:
       dashboard-service:
         name: Dashboard Services

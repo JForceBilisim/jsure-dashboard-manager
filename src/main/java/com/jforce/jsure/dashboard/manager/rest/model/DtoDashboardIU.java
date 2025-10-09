@@ -16,8 +16,6 @@ public class DtoDashboardIU extends DtoCrudModel {
 
     private DesignType designType;
 
-    private String username;
-
     private String dashboardTemplateId;
 
     private DashboardType dashboardType;

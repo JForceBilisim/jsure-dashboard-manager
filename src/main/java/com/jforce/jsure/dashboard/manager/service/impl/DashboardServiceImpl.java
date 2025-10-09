@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -84,6 +85,13 @@ public class DashboardServiceImpl extends BaseDbServiceImpl<DashboardRepository,
     }
 
     @Override
+    public DtoDashboardInfo findDashboardById(String id) {
+        Optional<Dashboard> dashboard = dao.findById(id);
+        List<DashboardWidget> dashboardWidgets = dashboardWidgetService.findDashboardWidgetByDashboardId(id);
+        return createNewDashboardInfo(dashboard.get(), dashboardWidgets);
+    }
+
+    @Override
     public DtoDashboardInfo createNewDashboard(DtoDashboardIU dtoDashboardIU) {
         if(JObjectUtils.isEmpty(dtoDashboardIU.getWidgets())) {
             throw new JSureException(new JSureMessage(JMessageType.NOT_EXISTS_IN_THE_RECORDS_1006, JMessageFactory.ofBundle(JMessageType.NOT_EXISTS_IN_THE_RECORDS_1006.getBundleCode())));
@@ -117,20 +125,28 @@ public class DashboardServiceImpl extends BaseDbServiceImpl<DashboardRepository,
     @Override
     public DtoDashboard makeMainDashboard(String id) {
         Dashboard dashboard = findAndCheckById(id);
+        List<Dashboard> userDashboards = dao.findCurrentDashboardsByUsername(sessionInstanceService.getSessionInstance().getUserInformation().getUserName());
+        userDashboards.forEach(userDash -> {
+            userDash.setIsMainDashboard(false);
+            update(userDash);
+        });
         dashboard.setIsMainDashboard(true);
         update(dashboard);
         return toDTO(dashboard);
     }
 
+    @Override
+    public DtoDashboard rollbackMainDashboard(String id) {
+        Dashboard dashboard = findAndCheckById(id);
+        dashboard.setIsMainDashboard(false);
+        update(dashboard);
+        return toDTO(dashboard);
+    }
+
     private void updateDashboardWidget(Dashboard dashboard, DtoDashboardWidgetIU dtoDashboardWidgetIU) {
-        DashboardWidget dashboardWidget = dashboardWidgetService.findDashboardWidgetByDashboardAndWidget(dashboard.getId(), dtoDashboardWidgetIU.getWidgetId());
-        dashboardWidget.setDashboard(dashboard);
-        Widget widget = widgetService.findAndCheckById(dtoDashboardWidgetIU.getWidgetId());
-        dashboardWidget.setWidget(widget);
-        dashboardWidget.setCoordX(dtoDashboardWidgetIU.getCoordX());
-        dashboardWidget.setCoordY(dtoDashboardWidgetIU.getCoordY());
-        dashboardWidget.setPanelSize(dtoDashboardWidgetIU.getPanelSize());
-        dashboardWidgetService.update(dashboardWidget);
+        List<DashboardWidget> dashboardWidgets = dashboardWidgetService.findDashboardWidgetByDashboardId(dashboard.getId());
+        dashboardWidgetService.deleteAll(dashboardWidgets);
+        saveNewDashboardWidget(dashboard, dtoDashboardWidgetIU);
     }
 
     private void updateDashboard(Dashboard dashboard, DtoDashboardIU dtoDashboardIU) {
@@ -176,6 +192,23 @@ public class DashboardServiceImpl extends BaseDbServiceImpl<DashboardRepository,
         List<DtoWidgetInfo> widgetDtos = dtoDashboardIU.getWidgets().stream().map(dw -> {
             DtoWidgetInfo dtoWidgetInfo = new DtoWidgetInfo();
             Widget widget = widgetService.findAndCheckById(dw.getWidgetId());
+            DtoWidget dtoWidget = widgetService.toDTO(widget);
+            dtoWidgetInfo.setWidget(dtoWidget);
+            dtoWidgetInfo.setCoordX(dw.getCoordX());
+            dtoWidgetInfo.setCoordY(dw.getCoordY());
+            dtoWidgetInfo.setPanelSize(dw.getPanelSize());
+            return dtoWidgetInfo;
+        }).collect(Collectors.toList());
+        dtoDashboardInfo.setWidgets(widgetDtos);
+        return dtoDashboardInfo;
+    }
+
+    private DtoDashboardInfo createNewDashboardInfo(Dashboard dashboard, List<DashboardWidget> dashboardWidgets) {
+        DtoDashboardInfo dtoDashboardInfo = new DtoDashboardInfo();
+        dtoDashboardInfo.setDashboard(toDTO(dashboard));
+        List<DtoWidgetInfo> widgetDtos = dashboardWidgets.stream().map(dw -> {
+            DtoWidgetInfo dtoWidgetInfo = new DtoWidgetInfo();
+            Widget widget = widgetService.findAndCheckById(dw.getWidget().getId());
             DtoWidget dtoWidget = widgetService.toDTO(widget);
             dtoWidgetInfo.setWidget(dtoWidget);
             dtoWidgetInfo.setCoordX(dw.getCoordX());

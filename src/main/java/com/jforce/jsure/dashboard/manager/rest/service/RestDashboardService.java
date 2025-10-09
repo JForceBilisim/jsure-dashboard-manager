@@ -14,6 +14,8 @@ public interface RestDashboardService {
 
     RestRootEntity<List<DtoDashboardInfo>> findCurrentDashboardsByUser();
 
+    RestRootEntity<DtoDashboardInfo> findDashboardById(String id);
+
     RestRootEntity<DtoDashboardInfo> createNewDashboard(DtoDashboardIU dtoDashboardIU);
 
     RestRootEntity<DtoDashboardInfo> updateDashboard(String id, DtoDashboardIU dtoDashboardIU);
@@ -21,4 +23,6 @@ public interface RestDashboardService {
     RestRootEntity<DtoDashboard> deleteDashboard(String id);
 
     RestRootEntity<DtoDashboard> makeDashboardMain(String id);
+
+    RestRootEntity<DtoDashboard> rollbackDashboardMain(String id);
 }
